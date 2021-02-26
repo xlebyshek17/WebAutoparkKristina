@@ -1,0 +1,45 @@
+﻿@model IEnumerable<AutoparkWebEF.Models.SparePartViewModel>
+@{
+    ViewData["Title"] = "SpareParts";
+}
+<h2>@ViewData["Title"]</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="VehicleViewModel" asp-action="ViewVehicles">Vehicles</a></li>
+        <li class="breadcrumb-item"><a asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Vehicle Types</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Spare Parts</li>
+        <li class="breadcrumb-item"><a asp-controller="OrderViewModel" asp-action="ViewOrders">Orders</a></li>
+        <li class="breadcrumb-item"><a asp-controller="OrderItemViewModel" asp-action="ViewOrderItems">Order Items</a></li>
+    </ol>
+</nav>
+<div>
+    <p>
+        <a class="btn btn-outline-info" role="button" asp-controller="SparePartViewModel" asp-action="CreateSparePart">Add detail</a>
+    </p>
+</div>
+<blockquote class="blockquote text-center">
+    <table class="table table-bordered table-hover table-sm">
+        <caption>List of SpareParts</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Definition</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>
+                        <a asp-controller="SparePartViewModel" asp-action="EditSparePart" asp-route-id="@item.Id">Update</a>    |
+                        <a asp-controller="SparePartViewModel" asp-action="DeleteSparePart" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</blockquote>

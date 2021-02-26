@@ -1,0 +1,33 @@
+﻿@model AutoparkWebEF.Models.OrderViewModel
+@inject AutoparkWebEF.BLL.Interfaces.IService<VehicleDto> vehicle
+
+@{
+    ViewData["Title"] = "Create order";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="CreateOrder" asp-controller="OrderViewModel">
+    <div>
+        <div class="form-group">
+            <label>Vehicle</label>
+            <div>
+                <select name="VehicleId" class="form-control">
+                    @foreach (var v in await vehicle.GetAll())
+                    {
+                        <option value="@v.Id">@v.ModelName</option>
+                    }
+                </select>
+            </div>
+            <p>@Html.ValidationMessageFor(m => m.VehicleId)</p>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-outline-info" />
+        </div>
+    </div>
+</form>
+
+
+<div>
+    <a class="btn btn-outline-info" role="button" asp-controller="OrderViewModel" asp-action="ViewOrders">Back to list of orders</a>
+</div>

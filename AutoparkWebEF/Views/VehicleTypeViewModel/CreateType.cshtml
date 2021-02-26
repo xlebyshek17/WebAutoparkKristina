@@ -1,0 +1,30 @@
+﻿@model AutoparkWebEF.Models.VehicleTypeViewModel
+
+@{
+    ViewData["Title"] = "New Vehicle Type";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="CreateType" asp-controller="VehicleTypeViewModel">
+    <div>
+        <div class="form-group">
+            <label asp-for="TypeName"></label>
+            <input type="text" asp-for="TypeName" class="form-control form-control-sm" />
+            <p>@Html.ValidationMessageFor(m => m.TypeName)</p>
+        </div>
+        <div class="form-group">
+            <label asp-for="TaxCoefficient"></label>
+            <input asp-for="TaxCoefficient" class="form-control  form-control-sm" />
+            <p>@Html.ValidationMessageFor(m => m.TaxCoefficient)</p>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-outline-info" />
+        </div>
+    </div>
+</form>
+
+
+<div>
+    <a class="btn btn-outline-info" role="button" asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Back to list of types</a>
+</div>

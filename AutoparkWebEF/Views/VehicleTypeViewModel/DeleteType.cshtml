@@ -1,0 +1,30 @@
+﻿@model AutoparkWebEF.Models.VehicleTypeViewModel
+@{
+    ViewData["Title"] = "Delete type";
+}
+<h2>@ViewBag.Title</h2>
+<div>
+    <dl class="dl-horizontal">
+        <dt>Type Name</dt>
+        <dd>
+            @Model.TypeName
+        </dd>
+
+        <dt>Tax Coefficient</dt>
+        <dd>
+            @Model.TaxCoefficient
+        </dd>
+    </dl>
+
+    <div>
+        <form asp-controller="VehicleTypeViewModel" asp-action="DeleteType" method="post">
+            <div class="form-group">
+                <input type="submit" class="btn btn-outline-info" value="Delete" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-outline-info" role="button" asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Back to list of types</a>
+</div>

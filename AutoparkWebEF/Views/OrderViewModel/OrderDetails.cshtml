@@ -1,0 +1,40 @@
+﻿@model AutoparkWebEF.Models.OrderViewModel
+@inject AutoparkWebEF.BLL.Interfaces.IService<OrderItemDto> order
+@{
+    ViewData["Title"] = "Order information";
+}
+<h2>@ViewData["Title"]</h2>
+<div>
+    <p>-----------------------------------------------</p>
+</div>
+<div class="card text-center">
+    <div class="card-header">
+        <h4>Order #@Model.Id (@Model.VehicleName)</h4>
+    </div>
+    <div class="card-body">
+        @foreach (var ord in await order.GetAll())
+        {
+            if (Model.Id == ord.OrderId)
+            {
+                <blockquote class="blockquote">
+                    <dl class="row">
+                        <dt class="col-sm-2">OrderItemsId</dt>
+                        <dd class="col-sm-10">@ord.Id</dd>
+
+                        <dt class="col-sm-2">Spare part</dt>
+                        <dd class="col-sm-10">@ord.Detail.Name</dd>
+
+                        <dt class="col-sm-2">Count</dt>
+                        <dd class="col-sm-10">@ord.DetailCount</dd>
+                    </dl>
+                    <footer class="blockquote-footer">Detailed information about the ordering of the <cite title="Spare Parts">Spare Parts</cite> of the vehicle</footer>
+                </blockquote>
+            }
+        }
+    </div>
+    <div>
+        <p><a class="btn btn-outline-info" role="button" asp-controller="OrderViewModel" asp-action="ViewOrders">Back to list of orders</a></p>
+    </div>
+</div>
+
+

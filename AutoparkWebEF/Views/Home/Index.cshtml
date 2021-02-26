@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+<h2>@ViewData["Title"]</h2>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="VehicleViewModel" asp-action="ViewVehicles">Vehicles</a></li>
+        <li class="breadcrumb-item"><a asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Vehicle Types</a></li>
+        <li class="breadcrumb-item"><a asp-controller="SparePartViewModel" asp-action="ViewSpareParts">Spare Parts</a></li>
+        <li class="breadcrumb-item"><a asp-controller="OrderViewModel" asp-action="ViewOrders">Orders</a></li>
+        <li class="breadcrumb-item"><a asp-controller="OrderItemViewModel" asp-action="ViewOrderItems">Order Items</a></li>
+    </ol>
+</nav>
+
+<div class="card" style="width: 50rem; position: center">
+    <div class="card-body">
+        <h5 class="card-title">BREAKING NEWS!!!</h5>
+        <p class="card-text">There will be something interesting here...</p>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<AutoparkWebEF.Models.VehicleViewModel>
+@{
+    ViewData["Title"] = "Vehicles";
+}
+<h2>@ViewData["Title"]</h2>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Vehicles</li>
+        <li class="breadcrumb-item"><a asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Vehicle Types</a></li>
+        <li class="breadcrumb-item"><a asp-controller="SparePartViewModel" asp-action="ViewSpareParts">Spare Parts</a></li>
+        <li class="breadcrumb-item"><a asp-controller="OrderViewModel" asp-action="ViewOrders">Orders</a></li>
+        <li class="breadcrumb-item"><a asp-controller="OrderItemViewModel" asp-action="ViewOrderItems">Order Items</a></li>
+    </ol>
+</nav>
+<div>
+    <p>
+        <a class="btn btn-outline-info" role="button" asp-controller="VehicleViewModel" asp-action="CreateVehicle">Add vehicle</a>
+    </p>
+</div>
+
+
+<table class="table table-bordered table-hover">
+    <caption>List of vehicles</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col"><a asp-controller="VehicleViewModel" asp-action="ViewVehicles" asp-route-sortOrder="@ViewBag.TypeName">Type</a></th>
+            <th><a asp-controller="VehicleViewModel" asp-action="ViewVehicles" asp-route-sortOrder="@ViewBag.ModelName">ModelName</a></th>
+            <th scope="col">Number</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Year</th>
+            <th><a asp-controller="VehicleViewModel" asp-action="ViewVehicles" asp-route-sortOrder="@ViewBag.Mileage">Mileage</a></th>
+            <th scope="col">TankVolume</th>
+            <th scope="col">Color</th>
+            <th scope="col">Engine</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><a asp-controller="VehicleViewModel" asp-action="VehicleDetails" asp-route-id="@item.Id">@item.Id</a></td>
+                <td>@item.TypeName</td>
+                <td>@item.ModelName</td>
+                <td>@item.RegistrationNumber</td>
+                <td>@item.Weight</td>
+                <td>@item.ManufactureYear</td>
+                <td>@item.Mileage</td>
+                <td>@item.TankVolume</td>
+                <td>@item.Color</td>
+                <td>@item.Engine</td>
+                <td>
+                    <a asp-controller="VehicleViewModel" asp-action="EditVehicle" asp-route-id="@item.Id">Update</a> |
+                    <a asp-controller="VehicleViewModel" asp-action="DeleteVehicle" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<AutoparkWebEF.Models.OrderViewModel>
+@{
+    ViewData["Title"] = "Orders";
+}
+<h2>@ViewData["Title"]</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="VehicleViewModel" asp-action="ViewVehicles">Vehicles</a></li>
+        <li class="breadcrumb-item"><a asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Vehicle Types</a></li>
+        <li class="breadcrumb-item"><a asp-controller="SparePartViewModel" asp-action="ViewSpareParts">Spare Parts</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Orders</li>
+        <li class="breadcrumb-item"><a asp-controller="OrderItemViewModel" asp-action="ViewOrderItems">Order Items</a></li>
+    </ol>
+</nav>
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Orders</h5>
+            <table class="table table-bordered table-hover table-sm table align-middle">
+                <caption>List of Orders</caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" class="text-center">Id</th>
+                        <th scope="col" class="text-center">Vehicle</th>
+                        @*<th></th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td align="center">@item.Id</td>
+                            <td align="center">@item.VehicleName</td>
+                            @*<td align="center"><a asp-controller="OrderViewModel" asp-action="OrderDetails" asp-route-id="@item.Id" class="btn btn-outline-info">Information</a></td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a asp-controller="OrderViewModel" asp-action="CreateOrder" class="btn btn-outline-info">Create Order</a>
+        </div>
+    </div>
+</div>

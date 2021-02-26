@@ -1,0 +1,50 @@
+﻿@model AutoparkWebEF.Models.VehicleViewModel
+@{
+    ViewData["Title"] = "Vehicle Details";
+}
+<h2>@ViewData["Title"]</h2>
+<div>
+    <p> </p>
+</div>
+<form asp-action="VehicleDetails" asp-controller="VehicleViewModel">
+    <table class="table table-bordered">
+        <caption>Vehicle Details</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col"><p class="text-center">ID</p></th>
+                <th scope="col"><p class="text-center">Type</p></th>
+                <th scope="col"><p class="text-center">Model</p></th>
+                <th scope="col"><p class="text-center">Number</p></th>
+                <th scope="col"><p class="text-center">Weight</p></th>
+                <th scope="col"><p class="text-center">Year</p></th>
+                <th scope="col"><p class="text-center">Mileage</p></th>
+                <th scope="col"><p class="text-center">TankVolume</p></th>
+                <th scope="col"><p class="text-center">Color</p></th>
+                <th scope="col"><p class="text-center">Engine</p></th>
+                <th scope="col"><p class="text-center">Tax per month</p></th>
+                <th scope="col"><p class="text-center">Mileage on a full tank</p></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.Id</td>
+                <td>@Model.TypeName</td>
+                <td>@Model.ModelName</td>
+                <td>@Model.RegistrationNumber</td>
+                <td>@Model.Weight kg</td>
+                <td>@Model.ManufactureYear</td>
+                <td>@Model.Mileage km</td>
+                <td>@Model.TankVolume</td>
+                <td>@Model.Color</td>
+                <td>@Model.Engine</td>
+                <td>@Model.TaxPerMonth.ToString("0.00") $</td>
+                <td>@Model.MileageWithFullTank.ToString("0.00") km</td>
+
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<div>
+    <a type="button" class="btn btn-outline-info" asp-controller="VehicleViewModel" asp-action="ViewVehicles">Back to list of vehicles</a>
+</div>

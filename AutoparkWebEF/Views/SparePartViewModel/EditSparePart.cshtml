@@ -1,0 +1,28 @@
+﻿@model AutoparkWebEF.Models.SparePartViewModel
+@{
+    ViewData["Title"] = "Edit SpareParts";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="EditSparePart" asp-controller="SparePartViewModel">
+    <div>
+        <div class="form-group row">
+            <label asp-for="Id" class="col-sm-2 col-form-label">Id</label>
+            <input type="text" readonly class="form-control" asp-for="Id">
+        </div>
+        <div class="form-group row">
+            <label asp-for="Name"></label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <p>@Html.ValidationMessageFor(m => m.Name)</p>
+        </div>
+        <div class="form-group row">
+            <input type="submit" value="Save" class="btn btn-outline-info" />
+        </div>
+    </div>
+</form>
+
+<div class="form-group row">
+    <a class="btn btn-outline-info" role="button" asp-controller="SparePartViewModel" asp-action="ViewSpareParts">Back to list of SpareParts</a>
+</div>
+
+

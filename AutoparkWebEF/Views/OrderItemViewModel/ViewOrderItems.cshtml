@@ -1,0 +1,76 @@
+﻿@model IEnumerable<AutoparkWebEF.Models.OrderItemViewModel>
+@inject AutoparkWebEF.BLL.Interfaces.IService<OrderDto> orders
+@{
+    ViewData["Title"] = "Order Items";
+}
+<h2>@ViewData["Title"]</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="VehicleViewModel" asp-action="ViewVehicles">Vehicles</a></li>
+        <li class="breadcrumb-item"><a asp-controller="VehicleTypeViewModel" asp-action="ViewVehicleTypes">Vehicle Types</a></li>
+        <li class="breadcrumb-item"><a asp-controller="SparePartViewModel" asp-action="ViewSpareParts">Spare Parts</a></li>
+        <li class="breadcrumb-item"><a asp-controller="OrderViewModel" asp-action="ViewOrders">Orders</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Order Items</li>
+    </ol>
+</nav>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">OrderItems</h5>
+                <table class="table table-bordered table-hover table-sm table align-middle">
+                    <caption>List of order items</caption>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" class="text-center">Id</th>
+                            <th scope="col" class="text-center">OrderID</th>
+                            <th scope="col" class="text-center">Spare Part</th>
+                            <th scope="col" class="text-center">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var o in Model)
+                        {
+                            <tr>
+                                <td align="center">
+                                    <a asp-controller="OrderItemViewModel" asp-action="OrderItemDetails" asp-route-id="@o.Id">@o.Id</a>
+                                </td>
+                                <td align="center">@o.OrderId</td>
+                                <td align="center">@o.SparePartName</td>
+                                <td align="center">@o.DetailCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <a asp-controller="OrderItemViewModel" asp-action="CreateOrderItem" class="btn btn-outline-info">Create Order Item</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Orders</h5>
+                <table class="table table-bordered  table-sm table align-middle">
+                    <caption>List of orders</caption>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" class="text-center">Id</th>
+                            <th scope="col" class="text-center">Vehicle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var o in await orders.GetAll())
+                        {
+                            <tr>
+                                <td align="center">@o.Id</td>
+                                <td align="center">@o.Vehicle.ModelName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
