@@ -33,12 +33,15 @@ namespace AutoparkWebEF
             string connection = Configuration.GetConnectionString("DefaultConnection");
             DbContextOptionsBuilder<AutoparkContext> optionsBuilder = new DbContextOptionsBuilder<AutoparkContext>();
             optionsBuilder.EnableSensitiveDataLogging(true);
+            
+            // TODO: Please read how to setup DbContext by DI. Because you are using useless code here.
             services.AddScoped<IUnitOfWork, EFUnitOfWork>(ptovider => new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options));
             services.AddScoped<IService<VehicleDto>, VehicleService>(provider => new VehicleService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
             services.AddScoped<IService<VehicleTypeDto>, VehicleTypeService>(provider => new VehicleTypeService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
             services.AddScoped<IService<SparePartDto>, SparePartsService>(provider => new SparePartsService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
             services.AddScoped<IService<OrderDto>, OrderService>(provider => new OrderService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
             services.AddScoped<IService<OrderItemDto>, OrderItemService>(provider => new OrderItemService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
+            //
             services.AddControllersWithViews();
         }
 

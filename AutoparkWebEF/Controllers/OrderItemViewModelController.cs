@@ -22,6 +22,8 @@ namespace AutoparkWebEF.Controllers
         public async Task<IActionResult> ViewOrderItems()
         {
             var orderItemDtos = await db.GetAll();
+            
+            // TODO: Need to find out another way for mapping. Looks pretty ugly. You can try to use Profiles or CreateMap method in Startup. As you wish.
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderItemDto, OrderItemViewModel>().ForMember(dest => dest.SparePartName, act => act.MapFrom(src => src.Detail.Name))).CreateMapper();
             var orderItems = mapper.Map<IEnumerable<OrderItemDto>, List<OrderItemViewModel>>(orderItemDtos);
             return View(orderItems);

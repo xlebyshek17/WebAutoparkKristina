@@ -13,6 +13,8 @@ namespace AutoparkWebEF.DAL.Repositories
     public class EFUnitOfWork : IUnitOfWork
     {
         private AutoparkContext db;
+        
+        // TODO: Why do all props have interface type but these fields are not? Change this pls.
         private VehicleRepository vehicleRepo;
         private VehicleTypeRepository vehicleTypeRepo;
         private SparePartRepository sparePartRepo;
@@ -21,6 +23,7 @@ namespace AutoparkWebEF.DAL.Repositories
 
         public EFUnitOfWork(DbContextOptions<AutoparkContext> connection)
         {
+            // TODO: Move it in DI. You have to get ready context instance from DI.
             db = new AutoparkContext(connection);
         }
 

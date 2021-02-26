@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AutoparkWebEF.DAL.Repositories
 {
+    // TODO: You can generalize all repository actions in one abstract class. Read about generic repository and make it up for all your repos.
     public class OrderItemsRepository : IRepository<OrderItem>
     {
         private AutoparkContext db;
