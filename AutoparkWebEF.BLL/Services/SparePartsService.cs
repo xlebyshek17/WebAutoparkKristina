@@ -15,10 +15,12 @@ namespace AutoparkWebEF.BLL.Services
     public class SparePartsService : IService<SparePartDto>
     {
         IUnitOfWork db;
+        private readonly IMapper _mapper;
 
-        public SparePartsService(IUnitOfWork uow)
+        public SparePartsService(IUnitOfWork uow, IMapper mapper)
         {
             db = uow;
+            _mapper = mapper;
         }
 
         public void Create(SparePartDto sparePartDTO)
@@ -26,11 +28,7 @@ namespace AutoparkWebEF.BLL.Services
             if (sparePartDTO == null)
                 throw new ValidationException("Spare part not found", "");
 
-            SparePart sparePart = new SparePart
-            {
-                Id = sparePartDTO.Id,
-                Name = sparePartDTO.Name
-            };
+            var sparePart = _mapper.Map<SparePartDto, SparePart>(sparePartDTO);
 
             db.SpareParts.Create(sparePart);
             db.Save();
@@ -60,13 +58,12 @@ namespace AutoparkWebEF.BLL.Services
             if (sparePart == null)
                 throw new ValidationException("Spare part not found", "");
 
-            return new SparePartDto { Id = sparePart.Id, Name = sparePart.Name };
+            return _mapper.Map<SparePart, SparePartDto>(sparePart);
         }
 
         public IEnumerable<SparePartDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SparePart, SparePartDto>()).CreateMapper();
-            return mapper.Map<IEnumerable<SparePart>, List<SparePartDto>>(db.SpareParts.GetAll());
+            return _mapper.Map<IEnumerable<SparePart>, List<SparePartDto>>(db.SpareParts.GetAll());
         }
 
         public void Update(SparePartDto sparePartDTO)
@@ -74,11 +71,7 @@ namespace AutoparkWebEF.BLL.Services
             if (sparePartDTO == null)
                 throw new ValidationException("Spare part not found", "");
 
-            SparePart sparePart = new SparePart
-            {
-                Id = sparePartDTO.Id,
-                Name = sparePartDTO.Name
-            };
+            var sparePart = _mapper.Map<SparePartDto, SparePart>(sparePartDTO);
 
             db.SpareParts.Update(sparePart);
             db.Save();

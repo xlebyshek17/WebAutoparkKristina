@@ -15,10 +15,12 @@ namespace AutoparkWebEF.BLL.Services
     public class VehicleTypeService : IService<VehicleTypeDto>
     {
         IUnitOfWork db;
+        private readonly IMapper _mapper;
 
-        public VehicleTypeService(IUnitOfWork uow)
+        public VehicleTypeService(IUnitOfWork uow, IMapper mapper)
         {
             db = uow;
+            _mapper = mapper;
         }
 
         public void Create(VehicleTypeDto typeDto)
@@ -26,12 +28,7 @@ namespace AutoparkWebEF.BLL.Services
             if (typeDto == null)
                 throw new ValidationException("Vehicle type not found", "");
 
-            VehicleType type = new VehicleType
-            {
-                Id = typeDto.Id,
-                TypeName = typeDto.TypeName,
-                TaxCoefficient = typeDto.TaxCoefficient
-            };
+            var type = _mapper.Map<VehicleTypeDto, VehicleType>(typeDto);
 
             db.VehicleTypes.Create(type);
             db.Save();
@@ -65,10 +62,7 @@ namespace AutoparkWebEF.BLL.Services
 
         public IEnumerable<VehicleTypeDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<VehicleType, VehicleTypeDto>();
-                cfg.CreateMap<VehicleType, VehicleTypeDto>();
-            }).CreateMapper();
-            return mapper.Map<IEnumerable<VehicleType>, List<VehicleTypeDto>>(db.VehicleTypes.GetAll());
+            return _mapper.Map<IEnumerable<VehicleType>, List<VehicleTypeDto>>(db.VehicleTypes.GetAll());
         }
 
         public void Update(VehicleTypeDto typeDto)
@@ -76,12 +70,7 @@ namespace AutoparkWebEF.BLL.Services
             if (typeDto == null)
                 throw new ValidationException("Vehicle type not found", "");
 
-            VehicleType type = new VehicleType
-            {
-                Id = typeDto.Id,
-                TypeName = typeDto.TypeName,
-                TaxCoefficient = typeDto.TaxCoefficient
-            };
+            var type = _mapper.Map<VehicleTypeDto, VehicleType>(typeDto);
 
             db.VehicleTypes.Update(type);
             db.Save();

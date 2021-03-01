@@ -13,28 +13,26 @@ namespace AutoparkWebEF.Controllers
     public class OrderItemViewModelController : Controller
     {
         IService<OrderItemDto> db;
+        private readonly IMapper _mapper;
 
-        public OrderItemViewModelController(IService<OrderItemDto> context)
+        public OrderItemViewModelController(IService<OrderItemDto> context, IMapper mapper)
         {
             db = context;
+            _mapper = mapper;
         }
 
         public IActionResult ViewOrderItems()
         {
             var orderItemDtos = db.GetAll();
-            
-            // TODO: Need to find out another way for mapping. Looks pretty ugly. You can try to use Profiles or CreateMap method in Startup. As you wish.
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderItemDto, OrderItemViewModel>().ForMember(dest => dest.SparePartName, act => act.MapFrom(src => src.Detail.Name))).CreateMapper();
-            var orderItems = mapper.Map<IEnumerable<OrderItemDto>, List<OrderItemViewModel>>(orderItemDtos);
+
+            var orderItems = _mapper.Map<IEnumerable<OrderItemDto>, List<OrderItemViewModel>>(orderItemDtos);
             return View(orderItems);
         }
 
         public async Task<IActionResult> OrderItemDetails(int id)
         {
             var orderItemDto = await db.Get(id);
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderItemDto, OrderItemViewModel>().ForMember(dest => dest.SparePartName, act => act.MapFrom(src => src.Detail.Name))
-            .ForMember(dest => dest.VehicleName, act => act.MapFrom(src => src.Order.Vehicle.ModelName))).CreateMapper();
-            var orderItem = mapper.Map<OrderItemDto, OrderItemViewModel>(orderItemDto);
+            var orderItem = _mapper.Map<OrderItemDto, OrderItemViewModel>(orderItemDto);
 
             return View(orderItem) ?? (IActionResult)NotFound();
         }
@@ -47,8 +45,7 @@ namespace AutoparkWebEF.Controllers
         [HttpPost]
         public IActionResult CreateOrderItem(OrderItemViewModel orderItem)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderItemViewModel, OrderItemDto>()).CreateMapper();
-            var orderItemDto = mapper.Map<OrderItemViewModel, OrderItemDto>(orderItem);
+            var orderItemDto = _mapper.Map<OrderItemViewModel, OrderItemDto>(orderItem);
             db.Create(orderItemDto);
             return RedirectToAction("ViewOrderItems");
         }

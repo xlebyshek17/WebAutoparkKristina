@@ -15,23 +15,19 @@ namespace AutoparkWebEF.BLL.Services
     public class OrderItemService : IService<OrderItemDto>
     {
         IUnitOfWork db;
+        private readonly IMapper _mapper;
 
-        public OrderItemService(IUnitOfWork uow)
+        public OrderItemService(IUnitOfWork uow, IMapper mapper)
         {
             db = uow;
+            _mapper = mapper;
         }
         public void Create(OrderItemDto orderItemDto)
         {
             if (orderItemDto == null)
                 throw new ValidationException("Order item not found", "");
 
-            OrderItem orderItem = new OrderItem
-            {
-                Id = orderItemDto.Id,
-                OrderId = orderItemDto.OrderId,
-                DetailId = orderItemDto.DetailId,
-                DetailCount = orderItemDto.DetailCount
-            };
+            var orderItem = _mapper.Map<OrderItemDto, OrderItem>(orderItemDto);
 
             db.OrderItems.Create(orderItem);
             db.Save();
@@ -61,20 +57,12 @@ namespace AutoparkWebEF.BLL.Services
             if (orderItem == null)
                 throw new ValidationException("Order item not found", "");
 
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<OrderItem, OrderItemDto>();
-                cfg.CreateMap<Order, OrderDto>();
-                cfg.CreateMap<SparePart, SparePartDto>();
-            }).CreateMapper();
-            return mapper.Map<OrderItem, OrderItemDto>(orderItem);
+            return _mapper.Map<OrderItem, OrderItemDto>(orderItem);
         }
 
         public IEnumerable<OrderItemDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<OrderItem, OrderItemDto>();
-                cfg.CreateMap<Order, OrderDto>();
-                cfg.CreateMap<SparePart, SparePartDto>();
-            }).CreateMapper();
-            return mapper.Map<IEnumerable<OrderItem>, List<OrderItemDto>>(db.OrderItems.GetAll());
+            return _mapper.Map<IEnumerable<OrderItem>, List<OrderItemDto>>(db.OrderItems.GetAll());
         }
 
         public void Update(OrderItemDto orderItemDto)
@@ -82,13 +70,7 @@ namespace AutoparkWebEF.BLL.Services
             if (orderItemDto == null)
                 throw new ValidationException("Order item not found", "");
 
-            OrderItem orderItem = new OrderItem
-            {
-                Id = orderItemDto.Id,
-                OrderId = orderItemDto.OrderId,
-                DetailId = orderItemDto.DetailId,
-                DetailCount = orderItemDto.DetailCount
-            };
+            var orderItem = _mapper.Map<OrderItemDto, OrderItem>(orderItemDto);
 
             db.OrderItems.Update(orderItem);
             db.Save();

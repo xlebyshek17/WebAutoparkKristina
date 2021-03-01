@@ -16,10 +16,12 @@ namespace AutoparkWebEF.BLL.Services
     public class OrderService : IService<OrderDto>
     {
         IUnitOfWork db;
+        private readonly IMapper _mapper;
 
-        public OrderService(IUnitOfWork uow)
+        public OrderService(IUnitOfWork uow, IMapper mapper)
         {
             db = uow;
+            _mapper = mapper;
         }
 
         public void Create(OrderDto orderDto)
@@ -27,11 +29,7 @@ namespace AutoparkWebEF.BLL.Services
             if (orderDto == null)
                 throw new ValidationException("Order not found", "");
 
-            Order order = new Order
-            {
-                Id = orderDto.Id,
-                VehicleId = orderDto.VehicleId
-            };
+            var order = _mapper.Map<OrderDto, Order>(orderDto);
 
             db.Orders.Create(order);
             db.Save();
@@ -58,15 +56,12 @@ namespace AutoparkWebEF.BLL.Services
 
             Order order = await db.Orders.Get(id.Value);
 
-            return new OrderDto { Id = order.Id, VehicleId = order.VehicleId };
+            return _mapper.Map<Order, OrderDto>(order);
         }
 
         public IEnumerable<OrderDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<Order, OrderDto>();
-                cfg.CreateMap<Vehicle, VehicleDto>();
-            }).CreateMapper();
-            return mapper.Map<IEnumerable<Order>, List<OrderDto>>(db.Orders.GetAll());
+            return _mapper.Map<IEnumerable<Order>, List<OrderDto>>(db.Orders.GetAll());
         }
 
         public void Update(OrderDto orderDto)
@@ -74,11 +69,7 @@ namespace AutoparkWebEF.BLL.Services
             if (orderDto == null)
                 throw new ValidationException("Order not found", "");
 
-            Order order = new Order
-            {
-                Id = orderDto.Id,
-                VehicleId = orderDto.VehicleId
-            };
+            Order order = _mapper.Map<OrderDto, Order>(orderDto);
 
             db.Orders.Update(order);
             db.Save();

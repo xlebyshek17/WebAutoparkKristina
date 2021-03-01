@@ -13,17 +13,18 @@ namespace AutoparkWebEF.Controllers
     public class SparePartViewModelController : Controller
     {
         IService<SparePartDto> db;
+        private readonly IMapper _mapper;
 
-        public SparePartViewModelController(IService<SparePartDto> service)
+        public SparePartViewModelController(IService<SparePartDto> service, IMapper mapper)
         {
             db = service;
+            _mapper = mapper;
         }
 
         public IActionResult ViewSpareParts()
         {
             var partsDtos = db.GetAll();
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SparePartDto, SparePartViewModel>()).CreateMapper();
-            var parts = mapper.Map<IEnumerable<SparePartDto>, List<SparePartViewModel>>(partsDtos);
+            var parts = _mapper.Map<IEnumerable<SparePartDto>, List<SparePartViewModel>>(partsDtos);
             return View(parts);
         }
 
@@ -35,7 +36,7 @@ namespace AutoparkWebEF.Controllers
         [HttpPost]
         public IActionResult CreateSparePart(SparePartViewModel part)
         {
-            var partDto = new SparePartDto { Id = part.Id, Name = part.Name };
+            var partDto = _mapper.Map<SparePartViewModel, SparePartDto>(part);
             db.Create(partDto);
             return RedirectToAction("ViewSpareParts");
         }
@@ -47,7 +48,7 @@ namespace AutoparkWebEF.Controllers
             if (id != null)
             {
                 var partDto = await db.Get(id);
-                var part = new SparePartViewModel { Id = partDto.Id, Name = partDto.Name };
+                var part = _mapper.Map<SparePartDto, SparePartViewModel>(partDto);
                 if (part != null)
                     return View(part);
             }
@@ -74,7 +75,7 @@ namespace AutoparkWebEF.Controllers
             if (id != null)
             {
                 var partDto = await db.Get(id);
-                var part = new SparePartViewModel { Id = partDto.Id, Name = partDto.Name };
+                var part = _mapper.Map<SparePartDto, SparePartViewModel>(partDto);
                 if (part != null)
                     return View(part);
             }
@@ -86,7 +87,7 @@ namespace AutoparkWebEF.Controllers
         {
             if (ModelState.IsValid)
             {
-                var partDto = new SparePartDto { Id = part.Id, Name = part.Name };
+                var partDto = _mapper.Map<SparePartViewModel, SparePartDto>(part);
                 db.Update(partDto);
                 return RedirectToAction("ViewSpareParts");
             }

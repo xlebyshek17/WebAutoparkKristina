@@ -13,17 +13,18 @@ namespace AutoparkWebEF.Controllers
     public class VehicleTypeViewModelController : Controller
     {
         IService<VehicleTypeDto> db;
+        private readonly IMapper _mapper;
 
-        public VehicleTypeViewModelController(IService<VehicleTypeDto> service)
+        public VehicleTypeViewModelController(IService<VehicleTypeDto> service, IMapper mapper)
         {
             db = service;
+            _mapper = mapper;
         }
 
         public IActionResult ViewVehicleTypes()
         {
             var vehicleTypeDtos = db.GetAll();
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeDto, VehicleTypeViewModel>()).CreateMapper();
-            var vehicles = mapper.Map<IEnumerable<VehicleTypeDto>, List<VehicleTypeViewModel>>(vehicleTypeDtos);
+            var vehicles = _mapper.Map<IEnumerable<VehicleTypeDto>, List<VehicleTypeViewModel>>(vehicleTypeDtos);
             return View(vehicles);
         }
 
@@ -34,8 +35,7 @@ namespace AutoparkWebEF.Controllers
         [HttpPost]
         public IActionResult CreateType(VehicleTypeViewModel type)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeViewModel, VehicleTypeDto>()).CreateMapper();
-            var typeDto = mapper.Map<VehicleTypeViewModel, VehicleTypeDto>(type);
+            var typeDto = _mapper.Map<VehicleTypeViewModel, VehicleTypeDto>(type);
 
             db.Create(typeDto);
 
@@ -49,8 +49,7 @@ namespace AutoparkWebEF.Controllers
             if (id != null)
             {
                 var typeDto = await db.Get(id);
-                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeDto, VehicleTypeViewModel>()).CreateMapper();
-                var type = mapper.Map<VehicleTypeDto, VehicleTypeViewModel>(typeDto);
+                var type = _mapper.Map<VehicleTypeDto, VehicleTypeViewModel>(typeDto);
                 if (type != null)
                     return View(type);
             }
@@ -77,8 +76,7 @@ namespace AutoparkWebEF.Controllers
             if (id != null)
             {
                 var typeDto = await db.Get(id);
-                var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<VehicleTypeDto, VehicleTypeViewModel>(); }).CreateMapper();
-                var type = mapper.Map<VehicleTypeDto, VehicleTypeViewModel>(typeDto);
+                var type = _mapper.Map<VehicleTypeDto, VehicleTypeViewModel>(typeDto);
                 if (type != null)
                     return View(type);
             }
@@ -90,8 +88,7 @@ namespace AutoparkWebEF.Controllers
         {
             if (ModelState.IsValid)
             {
-                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeViewModel, VehicleTypeDto>()).CreateMapper();
-                var typeDto = mapper.Map<VehicleTypeViewModel, VehicleTypeDto>(type);
+                var typeDto = _mapper.Map<VehicleTypeViewModel, VehicleTypeDto>(type);
                 db.Update(typeDto);
                 return RedirectToAction("ViewVehicleTypes");
             }

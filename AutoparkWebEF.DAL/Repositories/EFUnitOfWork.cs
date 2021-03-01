@@ -14,7 +14,6 @@ namespace AutoparkWebEF.DAL.Repositories
     {
         private AutoparkContext db;
         
-        // TODO: Why do all props have interface type but these fields are not? Change this pls.
         private IGenericRepository<Vehicle> vehicleRepo;
         private IGenericRepository<VehicleType> vehicleTypeRepo;
         private IGenericRepository<SparePart> sparePartRepo;

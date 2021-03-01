@@ -16,10 +16,12 @@ namespace AutoparkWebEF.BLL.Services
     public class VehicleService : IService<VehicleDto>
     {
         IUnitOfWork db { get; set; }
+        private readonly IMapper _mapper;
 
-        public VehicleService(IUnitOfWork uow)
+        public VehicleService(IUnitOfWork uow, IMapper mapper)
         {
             db = uow;
+            _mapper = mapper;
         }
 
         public void Create(VehicleDto vehicleDto)
@@ -27,11 +29,7 @@ namespace AutoparkWebEF.BLL.Services
             if (vehicleDto == null)
                 throw new ValidationException("Vehicle not found", "");
 
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<VehicleDto, Vehicle>();
-            }).CreateMapper();
-            var vehicle = mapper.Map<VehicleDto, Vehicle>(vehicleDto);
+            var vehicle = _mapper.Map<VehicleDto, Vehicle>(vehicleDto);
 
             db.Vehicles.Create(vehicle);
             db.Save();
@@ -61,20 +59,12 @@ namespace AutoparkWebEF.BLL.Services
             if (vehicle == null)
                 throw new ValidationException("Vehicle not found", "");
 
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Vehicle, VehicleDto>();
-                cfg.CreateMap<VehicleType, VehicleTypeDto>();
-            }).CreateMapper();
-            return mapper.Map<Vehicle, VehicleDto>(vehicle);
+            return _mapper.Map<Vehicle, VehicleDto>(vehicle);
         }
 
         public IEnumerable<VehicleDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<Vehicle, VehicleDto>();
-                cfg.CreateMap<VehicleType, VehicleTypeDto>();
-            }).CreateMapper();
-            return mapper.Map<IEnumerable<Vehicle>, List<VehicleDto>>(db.Vehicles.GetAll());
+            return _mapper.Map<IEnumerable<Vehicle>, List<VehicleDto>>(db.Vehicles.GetAll());
         }
 
         public void Update(VehicleDto vehicleDto)
@@ -82,11 +72,7 @@ namespace AutoparkWebEF.BLL.Services
             if (vehicleDto == null)
                 throw new ValidationException("Vehicle not found", "");
 
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<VehicleDto, Vehicle>();
-            }).CreateMapper();
-            var vehicle = mapper.Map<VehicleDto, Vehicle>(vehicleDto);
+            var vehicle = _mapper.Map<VehicleDto, Vehicle>(vehicleDto);
 
             db.Vehicles.Update(vehicle);
             db.Save();

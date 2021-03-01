@@ -47,6 +47,7 @@ namespace AutoparkWebEF
             services.AddScoped<IService<SparePartDto>, SparePartsService>();
             services.AddScoped<IService<OrderDto>, OrderService>();
             services.AddScoped<IService<OrderItemDto>, OrderItemService>();
+            services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddControllersWithViews();
 
             var config = new MapperConfiguration(cfg =>

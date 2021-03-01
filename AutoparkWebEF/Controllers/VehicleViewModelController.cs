@@ -14,10 +14,12 @@ namespace AutoparkWebEF.Controllers
     public class VehicleViewModelController : Controller
     {
         IService<VehicleDto> db;
+        private readonly IMapper _mapper;
 
-        public VehicleViewModelController(IService<VehicleDto> service)
+        public VehicleViewModelController(IService<VehicleDto> service, IMapper mapper)
         {
             db = service;
+            _mapper = mapper;
         }
 
         public IActionResult ViewVehicles(SortState sortOrder = SortState.DefaultByID)
@@ -27,9 +29,6 @@ namespace AutoparkWebEF.Controllers
             ViewData["TypeName"] = sortOrder == SortState.TypeNameAsc ? SortState.TypeNameDesc : SortState.TypeNameAsc;
 
             var vehicleDtos = db.GetAll();
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<VehicleDto, VehicleViewModel>().ForMember(dest => dest.TypeName, act => act.MapFrom(src => src.Type.TypeName));
-                
-            }).CreateMapper();
 
             vehicleDtos = sortOrder switch
             {
@@ -42,16 +41,14 @@ namespace AutoparkWebEF.Controllers
                 _ => vehicleDtos.OrderBy(v => v.Id)
             };
 
-            var vehicles = mapper.Map<IEnumerable<VehicleDto>, List<VehicleViewModel>>(vehicleDtos);
+            var vehicles = _mapper.Map<IEnumerable<VehicleDto>, List<VehicleViewModel>>(vehicleDtos);
             return View(vehicles);
         }
 
         public async Task<IActionResult> VehicleDetails(int id)
         {
             var vehicleDto = await db.Get(id);
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleDto, VehicleViewModel>()
-                .ForMember(dest => dest.TypeName, act => act.MapFrom(src => src.Type.TypeName))).CreateMapper();
-            var vehicle = mapper.Map<VehicleDto, VehicleViewModel>(vehicleDto);
+            var vehicle = _mapper.Map<VehicleDto, VehicleViewModel>(vehicleDto);
 
             return View(vehicle) ?? (IActionResult)NotFound();
         }
@@ -65,8 +62,7 @@ namespace AutoparkWebEF.Controllers
         {
             if (ModelState.IsValid)
             {
-                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleViewModel, VehicleDto>()).CreateMapper();
-                var vehicleDto = mapper.Map<VehicleViewModel, VehicleDto>(vehicle);
+                var vehicleDto = _mapper.Map<VehicleViewModel, VehicleDto>(vehicle);
                 db.Create(vehicleDto);
                 return RedirectToAction("ViewVehicles");
             }
@@ -82,9 +78,7 @@ namespace AutoparkWebEF.Controllers
             if (id != null)
             {
                 var vehicleDto = await db.Get(id);
-                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleDto, VehicleViewModel>()
-                .ForMember(dest => dest.TypeName, act => act.MapFrom(src => src.Type.TypeName))).CreateMapper();
-                var vehicle = mapper.Map<VehicleDto, VehicleViewModel>(vehicleDto);
+                var vehicle = _mapper.Map<VehicleDto, VehicleViewModel>(vehicleDto);
                 if (vehicle != null)
                     return View(vehicle);
             }
@@ -111,8 +105,7 @@ namespace AutoparkWebEF.Controllers
             if (id != null)
             {
                 var vehicleDto = await db.Get(id);
-                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleDto, VehicleViewModel>()).CreateMapper();
-                var vehicle = mapper.Map<VehicleDto, VehicleViewModel>(vehicleDto);
+                var vehicle = _mapper.Map<VehicleDto, VehicleViewModel>(vehicleDto);
                 if (vehicle != null)
                     return View(vehicle);
             }
@@ -124,9 +117,7 @@ namespace AutoparkWebEF.Controllers
         {
             if (ModelState.IsValid)
             {
-                var mapper = new MapperConfiguration(cfg => {
-                    cfg.CreateMap<VehicleViewModel, VehicleDto>();}).CreateMapper();
-                var vehicleDto = mapper.Map<VehicleViewModel, VehicleDto>(vehicle);
+                var vehicleDto = _mapper.Map<VehicleViewModel, VehicleDto>(vehicle);
                 db.Update(vehicleDto);
                 return RedirectToAction("ViewVehicles");
             }
