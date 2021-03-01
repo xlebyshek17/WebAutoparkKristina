@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 
 namespace AutoparkWebEF.BLL.Services
 {
@@ -68,12 +69,12 @@ namespace AutoparkWebEF.BLL.Services
             return mapper.Map<Vehicle, VehicleDto>(vehicle);
         }
 
-        public async Task<IEnumerable<VehicleDto>> GetAll()
+        public IEnumerable<VehicleDto> GetAll()
         {
             var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<Vehicle, VehicleDto>();
                 cfg.CreateMap<VehicleType, VehicleTypeDto>();
             }).CreateMapper();
-            return mapper.Map<IEnumerable<Vehicle>, List<VehicleDto>>(await db.Vehicles.GetAll());
+            return mapper.Map<IEnumerable<Vehicle>, List<VehicleDto>>(db.Vehicles.GetAll());
         }
 
         public void Update(VehicleDto vehicleDto)

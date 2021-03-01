@@ -24,6 +24,11 @@ namespace AutoparkWebEF.DAL.EF
         public virtual DbSet<Vehicle> Vehicles { get; set; }
         public virtual DbSet<VehicleType> VehicleTypes { get; set; }
 
+        public override void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");

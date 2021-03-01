@@ -20,13 +20,13 @@ namespace AutoparkWebEF.Controllers
             db = service;
         }
 
-        public async Task<IActionResult> ViewVehicles(SortState sortOrder = SortState.DefaultByID)
+        public IActionResult ViewVehicles(SortState sortOrder = SortState.DefaultByID)
         {
             ViewData["ModelName"] = sortOrder == SortState.ModelNameAsc ? SortState.ModelNameDesc : SortState.ModelNameAsc;
             ViewData["Mileage"] = sortOrder == SortState.MileageAsc ? SortState.MileageDesc : SortState.MileageAsc;
             ViewData["TypeName"] = sortOrder == SortState.TypeNameAsc ? SortState.TypeNameDesc : SortState.TypeNameAsc;
 
-            var vehicleDtos = await db.GetAll();
+            var vehicleDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<VehicleDto, VehicleViewModel>().ForMember(dest => dest.TypeName, act => act.MapFrom(src => src.Type.TypeName));
                 
             }).CreateMapper();

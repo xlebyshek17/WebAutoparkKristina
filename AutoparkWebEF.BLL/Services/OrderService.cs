@@ -7,6 +7,7 @@ using AutoparkWebEF.DAL.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -60,12 +61,12 @@ namespace AutoparkWebEF.BLL.Services
             return new OrderDto { Id = order.Id, VehicleId = order.VehicleId };
         }
 
-        public async Task<IEnumerable<OrderDto>> GetAll()
+        public IEnumerable<OrderDto> GetAll()
         {
             var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<Order, OrderDto>();
                 cfg.CreateMap<Vehicle, VehicleDto>();
             }).CreateMapper();
-            return mapper.Map<IEnumerable<Order>, List<OrderDto>>(await db.Orders.GetAll());
+            return mapper.Map<IEnumerable<Order>, List<OrderDto>>(db.Orders.GetAll());
         }
 
         public void Update(OrderDto orderDto)

@@ -6,6 +6,7 @@ using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,10 +63,12 @@ namespace AutoparkWebEF.BLL.Services
             return new VehicleTypeDto { Id = type.Id, TypeName = type.TypeName, TaxCoefficient = type.TaxCoefficient };
         }
 
-        public async Task<IEnumerable<VehicleTypeDto>> GetAll()
+        public IEnumerable<VehicleTypeDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleType, VehicleTypeDto>()).CreateMapper();
-            return mapper.Map<IEnumerable<VehicleType>, List<VehicleTypeDto>>(await db.VehicleTypes.GetAll());
+            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<VehicleType, VehicleTypeDto>();
+                cfg.CreateMap<VehicleType, VehicleTypeDto>();
+            }).CreateMapper();
+            return mapper.Map<IEnumerable<VehicleType>, List<VehicleTypeDto>>(db.VehicleTypes.GetAll());
         }
 
         public void Update(VehicleTypeDto typeDto)

@@ -1,7 +1,9 @@
+using AutoMapper;
 using AutoparkWebEF.BLL.DTO;
 using AutoparkWebEF.BLL.Interfaces;
 using AutoparkWebEF.BLL.Services;
 using AutoparkWebEF.DAL.EF;
+using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
 using AutoparkWebEF.DAL.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -31,18 +33,28 @@ namespace AutoparkWebEF
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            DbContextOptionsBuilder<AutoparkContext> optionsBuilder = new DbContextOptionsBuilder<AutoparkContext>();
-            optionsBuilder.EnableSensitiveDataLogging(true);
-            
-            // TODO: Please read how to setup DbContext by DI. Because you are using useless code here.
-            services.AddScoped<IUnitOfWork, EFUnitOfWork>(ptovider => new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options));
-            services.AddScoped<IService<VehicleDto>, VehicleService>(provider => new VehicleService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
-            services.AddScoped<IService<VehicleTypeDto>, VehicleTypeService>(provider => new VehicleTypeService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
-            services.AddScoped<IService<SparePartDto>, SparePartsService>(provider => new SparePartsService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
-            services.AddScoped<IService<OrderDto>, OrderService>(provider => new OrderService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
-            services.AddScoped<IService<OrderItemDto>, OrderItemService>(provider => new OrderItemService(new EFUnitOfWork(optionsBuilder.UseSqlServer(connection).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options)));
-            //
+
+            services.AddDbContext<AutoparkContext>(options => options.UseSqlServer(connection));
+            services.AddMvc();
+            services.AddScoped<GenericRepository<Order>, OrderRepository>();
+            services.AddScoped<GenericRepository<OrderItem>, OrderItemsRepository>();
+            services.AddScoped<GenericRepository<Vehicle>, VehicleRepository>();
+            services.AddScoped<GenericRepository<VehicleType>, VehicleTypeRepository>();
+            services.AddScoped<GenericRepository<SparePart>, SparePartRepository>();
+            services.AddScoped<IUnitOfWork, EFUnitOfWork>();
+            services.AddScoped<IService<VehicleDto>, VehicleService>();
+            services.AddScoped<IService<VehicleTypeDto>, VehicleTypeService>();
+            services.AddScoped<IService<SparePartDto>, SparePartsService>();
+            services.AddScoped<IService<OrderDto>, OrderService>();
+            services.AddScoped<IService<OrderItemDto>, OrderItemService>();
             services.AddControllersWithViews();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<OrderItem, OrderItemDto>();
+                cfg.CreateMap<Order, OrderDto>();
+                cfg.CreateMap<SparePart, SparePartDto>();
+            }).CreateMapper();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

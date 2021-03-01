@@ -19,9 +19,9 @@ namespace AutoparkWebEF.Controllers
             db = service;
         }
 
-        public async Task<IActionResult> ViewSpareParts()
+        public IActionResult ViewSpareParts()
         {
-            var partsDtos = await db.GetAll();
+            var partsDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SparePartDto, SparePartViewModel>()).CreateMapper();
             var parts = mapper.Map<IEnumerable<SparePartDto>, List<SparePartViewModel>>(partsDtos);
             return View(parts);

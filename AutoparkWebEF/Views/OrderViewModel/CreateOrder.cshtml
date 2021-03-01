@@ -12,7 +12,7 @@
             <label>Vehicle</label>
             <div>
                 <select name="VehicleId" class="form-control">
-                    @foreach (var v in await vehicle.GetAll())
+                    @foreach (var v in vehicle.GetAll())
                     {
                         <option value="@v.Id">@v.ModelName</option>
                     }

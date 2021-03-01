@@ -16,7 +16,7 @@
                             <label asp-for="OrderId"></label>
                             <div>
                                 <select name="OrderId" class="form-control">
-                                    @foreach (var o in await orders.GetAll())
+                                    @foreach (var o in orders.GetAll())
                                     {
                                         <option value="@o.Id">@o.Id</option>
                                     }
@@ -28,7 +28,7 @@
                             <label>Spare part</label>
                             <div>
                                 <select name="DetailId" class="form-control">
-                                    @foreach (var p in await parts.GetAll())
+                                    @foreach (var p in parts.GetAll())
                                     {
                                         <option value="@p.Id">@p.Name</option>
                                     }
@@ -66,7 +66,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var o in await orders.GetAll())
+                        @foreach (var o in orders.GetAll())
                         {
                             <tr>
                                 <td align="center">@o.Id</td>

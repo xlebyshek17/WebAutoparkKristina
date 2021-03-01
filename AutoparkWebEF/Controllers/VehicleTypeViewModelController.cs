@@ -19,9 +19,9 @@ namespace AutoparkWebEF.Controllers
             db = service;
         }
 
-        public async Task<IActionResult> ViewVehicleTypes()
+        public IActionResult ViewVehicleTypes()
         {
-            var vehicleTypeDtos = await db.GetAll();
+            var vehicleTypeDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeDto, VehicleTypeViewModel>()).CreateMapper();
             var vehicles = mapper.Map<IEnumerable<VehicleTypeDto>, List<VehicleTypeViewModel>>(vehicleTypeDtos);
             return View(vehicles);

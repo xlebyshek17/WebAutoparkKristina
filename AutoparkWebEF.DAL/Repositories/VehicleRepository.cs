@@ -10,61 +10,22 @@ using System.Threading.Tasks;
 
 namespace AutoparkWebEF.DAL.Repositories
 {
-    public class VehicleRepository : IRepository<Vehicle>
+    public class VehicleRepository : GenericRepository<Vehicle>
     {
-        private AutoparkContext db;
 
-        public VehicleRepository(AutoparkContext context)
+        public VehicleRepository(AutoparkContext context) : base(context)
         {
-            db = context;
-        }
-        
-        public async void Create(Vehicle vehicle)
-        {
-            await db.Vehicles.AddAsync(vehicle);
+
         }
 
-        public async void Delete(int id)
+        public override async Task<Vehicle> Get(int id)
         {
-            var vehicle = await db.Vehicles.FindAsync(id);
-            if (vehicle != null)
-                db.Vehicles.Remove(vehicle);
+            return await base.GetAll().AsQueryable().Include(v => v.Type).FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<Vehicle> Get(int id)
+        public override IEnumerable<Vehicle> GetAll()
         {
-            return await db.Vehicles.Include(v => v.Type).Where(v => v.Id == id).FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<Vehicle>> GetAll()
-        {
-            return await db.Vehicles.Include(v => v.Type).ToListAsync();
-        }
-
-        public void Update(Vehicle vehicle)
-        {
-            db.Vehicles.Update(vehicle);
-            //db.Entry(vehicle).State = EntityState.Modified;
-        }
-
-        private bool disposed = false;
-
-        public virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    db.Dispose();
-                }
-                disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            return base.GetAll().AsQueryable().Include(v => v.Type);
         }
     }
 }

@@ -6,6 +6,7 @@ using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,10 +63,10 @@ namespace AutoparkWebEF.BLL.Services
             return new SparePartDto { Id = sparePart.Id, Name = sparePart.Name };
         }
 
-        public async Task<IEnumerable<SparePartDto>> GetAll()
+        public IEnumerable<SparePartDto> GetAll()
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SparePart, SparePartDto>()).CreateMapper();
-            return mapper.Map<IEnumerable<SparePart>, List<SparePartDto>>(await db.SpareParts.GetAll());
+            return mapper.Map<IEnumerable<SparePart>, List<SparePartDto>>(db.SpareParts.GetAll());
         }
 
         public void Update(SparePartDto sparePartDTO)

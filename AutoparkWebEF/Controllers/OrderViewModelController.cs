@@ -19,9 +19,9 @@ namespace AutoparkWebEF.Controllers
             db = context;
         }
 
-        public async Task<IActionResult> ViewOrders()
+        public IActionResult ViewOrders()
         {
-            var orderDtos = await db.GetAll();
+            var orderDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderDto, OrderViewModel>().ForMember(dest => dest.VehicleName, act => act.MapFrom(src => src.Vehicle.ModelName))).CreateMapper();
             var orders = mapper.Map<IEnumerable<OrderDto>, List<OrderViewModel>>(orderDtos);
             return View(orders);

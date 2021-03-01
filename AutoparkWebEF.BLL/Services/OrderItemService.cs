@@ -6,6 +6,7 @@ using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,12 +56,12 @@ namespace AutoparkWebEF.BLL.Services
             if (id == null)
                 throw new ValidationException("Invalid id", "id");
 
-            OrderItem orderItem = await db.OrderItems.Get(id.Value);
+            var orderItem = await db.OrderItems.Get(id.Value);
 
             if (orderItem == null)
                 throw new ValidationException("Order item not found", "");
 
-            return new OrderItemDto
+            /*return new OrderItemDto
             {
                 Id = orderItem.Id,
                 OrderId = orderItem.OrderId,
@@ -68,13 +69,15 @@ namespace AutoparkWebEF.BLL.Services
                 DetailCount = orderItem.DetailCount,
                 Order = orderItem.Order,
                 Detail = orderItem.Detail
-            };
+            };*/
+            var mapper = new Mapper(config);
+            return mapper.Map<OrderItem, OrderItemDto>(orderItem);
         }
 
-        public async Task<IEnumerable<OrderItemDto>> GetAll()
+        public IEnumerable<OrderItemDto> GetAll()
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderItem, OrderItemDto>()).CreateMapper();
-            return mapper.Map<IEnumerable<OrderItem>, List<OrderItemDto>>(await db.OrderItems.GetAll());
+            return mapper.Map<IEnumerable<OrderItem>, List<OrderItemDto>>(db.OrderItems.GetAll());
         }
 
         public void Update(OrderItemDto orderItemDto)

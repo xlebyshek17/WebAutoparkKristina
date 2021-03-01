@@ -12,7 +12,7 @@ namespace AutoparkWebEF.BLL.DTO
         public int DetailId { get; set; }
         public int DetailCount { get; set; }
 
-        public SparePart Detail { get; set; }
-        public Order Order { get; set; }
+        public SparePartDto Detail { get; set; }
+        public OrderDto Order { get; set; }
     }
 }
