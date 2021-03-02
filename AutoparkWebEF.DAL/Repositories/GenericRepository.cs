@@ -11,36 +11,38 @@ namespace AutoparkWebEF.DAL.Interfaces
     public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly AutoparkContext db;
+        private readonly DbSet<TEntity> dbSet;
 
         public GenericRepository(AutoparkContext context)
         {
             db = context;
+            dbSet = db.Set<TEntity>();
         }
 
         public async void Create(TEntity entity)
         {
-            await db.Set<TEntity>().AddAsync(entity);
+            await dbSet.AddAsync(entity);
         }
 
         public void Delete(int id)
         {
             var entity = Get(id).Result;
-            db.Set<TEntity>().Remove(entity);
+            dbSet.Remove(entity);
         }
 
         public virtual async Task<TEntity> Get(int id)
         {
-            return await db.Set<TEntity>().FindAsync(id);
+            return await dbSet.FindAsync(id);
         }
 
         public virtual IEnumerable<TEntity> GetAll()
         {
-            return db.Set<TEntity>().AsNoTracking();
+            return dbSet.AsNoTracking();
         }
 
         public void Update(TEntity entity)
         {
-            db.Set<TEntity>().Update(entity);
+            dbSet.Update(entity);
         }
     }
 }
