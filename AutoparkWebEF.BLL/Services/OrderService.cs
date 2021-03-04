@@ -9,6 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
 
 namespace AutoparkWebEF.BLL.Services
 {
@@ -21,7 +23,7 @@ namespace AutoparkWebEF.BLL.Services
             db = uow;
         }
 
-        public void Create(OrderDto orderDto)
+        public async Task Create(OrderDto orderDto)
         {
             if (orderDto == null)
                 throw new ValidationException("Order not found", "");
@@ -32,17 +34,17 @@ namespace AutoparkWebEF.BLL.Services
                 VehicleId = orderDto.VehicleId
             };
 
-            db.Orders.Create(order);
-            db.Save();
+            await db.Orders.Create(order);
+            await db.Save();
         }
 
-        public void Delete(OrderDto orderDto)
+        public async Task Delete(OrderDto orderDto)
         {
             if (orderDto == null)
                 throw new ValidationException("Order not found", "");
 
-            db.Orders.Delete(orderDto.Id);
-            db.Save();
+            await db.Orders.Delete(orderDto.Id);
+            await db.Save();
         }
 
         public void Dispose()
@@ -60,15 +62,15 @@ namespace AutoparkWebEF.BLL.Services
             return new OrderDto { Id = order.Id, VehicleId = order.VehicleId };
         }
 
-        public async Task<IEnumerable<OrderDto>> GetAll()
+        public IQueryable<OrderDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<Order, OrderDto>();
+            var conf = new MapperConfiguration(cfg => { cfg.CreateMap<Order, OrderDto>();
                 cfg.CreateMap<Vehicle, VehicleDto>();
-            }).CreateMapper();
-            return mapper.Map<IEnumerable<Order>, List<OrderDto>>(await db.Orders.GetAll());
+            });
+            return db.Orders.GetAll().ProjectTo<OrderDto>(conf);
         }
 
-        public void Update(OrderDto orderDto)
+        public async Task Update(OrderDto orderDto)
         {
             if (orderDto == null)
                 throw new ValidationException("Order not found", "");
@@ -80,7 +82,7 @@ namespace AutoparkWebEF.BLL.Services
             };
 
             db.Orders.Update(order);
-            db.Save();
+            await db.Save();
         }
 
     }

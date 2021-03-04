@@ -4,6 +4,8 @@ using AutoparkWebEF.BLL.Infastructure;
 using AutoparkWebEF.BLL.Interfaces;
 using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +22,7 @@ namespace AutoparkWebEF.BLL.Services
             db = uow;
         }
 
-        public void Create(SparePartDto sparePartDTO)
+        public async Task Create(SparePartDto sparePartDTO)
         {
             if (sparePartDTO == null)
                 throw new ValidationException("Spare part not found", "");
@@ -31,17 +33,17 @@ namespace AutoparkWebEF.BLL.Services
                 Name = sparePartDTO.Name
             };
 
-            db.SpareParts.Create(sparePart);
-            db.Save();
+            await db.SpareParts.Create(sparePart);
+            await db.Save();
         }
 
-        public void Delete(SparePartDto sparePartDTO)
+        public async Task Delete(SparePartDto sparePartDTO)
         {
             if (sparePartDTO == null)
                 throw new ValidationException("Spare part not found", "");
 
-            db.SpareParts.Delete(sparePartDTO.Id);
-            db.Save();
+            await db.SpareParts.Delete(sparePartDTO.Id);
+            await db.Save();
         }
 
         public void Dispose()
@@ -62,13 +64,13 @@ namespace AutoparkWebEF.BLL.Services
             return new SparePartDto { Id = sparePart.Id, Name = sparePart.Name };
         }
 
-        public async Task<IEnumerable<SparePartDto>> GetAll()
+        public IQueryable<SparePartDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SparePart, SparePartDto>()).CreateMapper();
-            return mapper.Map<IEnumerable<SparePart>, List<SparePartDto>>(await db.SpareParts.GetAll());
+            var conf = new MapperConfiguration(cfg => cfg.CreateMap<SparePart, SparePartDto>());
+            return db.SpareParts.GetAll().ProjectTo<SparePartDto>(conf);
         }
 
-        public void Update(SparePartDto sparePartDTO)
+        public async Task Update(SparePartDto sparePartDTO)
         {
             if (sparePartDTO == null)
                 throw new ValidationException("Spare part not found", "");
@@ -80,7 +82,7 @@ namespace AutoparkWebEF.BLL.Services
             };
 
             db.SpareParts.Update(sparePart);
-            db.Save();
+            await db.Save();
         }
     }
 }

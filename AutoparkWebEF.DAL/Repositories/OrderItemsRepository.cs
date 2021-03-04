@@ -11,40 +11,23 @@ using System.Threading.Tasks;
 namespace AutoparkWebEF.DAL.Repositories
 {
     // TODO: You can generalize all repository actions in one abstract class. Read about generic repository and make it up for all your repos.
-    public class OrderItemsRepository : IRepository<OrderItem>
+    public class OrderItemsRepository : GenericRepository<OrderItem>
     {
-        private AutoparkContext db;
-
-        public OrderItemsRepository(AutoparkContext context)
+        public OrderItemsRepository(AutoparkContext context) : base(context)
         {
-            db = context;
+
         }
 
-        public async void Create(OrderItem orderItem)
+        public override async Task<OrderItem> Get(int id)
         {
-            await db.OrderItems.AddAsync(orderItem);
+            return await GetAll().FirstOrDefaultAsync(ord => ord.Id == id);
         }
 
-        public async void Delete(int id)
+        public override IQueryable<OrderItem> GetAll()
         {
-            var orderItem = await db.OrderItems.FindAsync(id);
-            if (orderItem != null)
-                db.OrderItems.Remove(orderItem);
+            return base.GetAll().Include(o => o.Detail).Include(o => o.Order).ThenInclude(o => o.Vehicle);
         }
 
-        public async Task<OrderItem> Get(int id)
-        {
-            return await db.OrderItems.Include(o => o.Detail).Include(o => o.Order).ThenInclude(o => o.Vehicle).Where(ord => ord.Id == id).FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<OrderItem>> GetAll()
-        {
-            return await db.OrderItems.Include(o => o.Order).Include(o => o.Detail).ToListAsync();
-        }
-
-        public void Update(OrderItem orderItem)
-        {
-            db.Entry(orderItem).State = EntityState.Modified;
-        }
+        
     }
 }

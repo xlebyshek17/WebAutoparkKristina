@@ -12,7 +12,7 @@
         <h4>Order #@Model.Id (@Model.VehicleName)</h4>
     </div>
     <div class="card-body">
-        @foreach (var ord in await order.GetAll())
+        @foreach (var ord in order.GetAll())
         {
             if (Model.Id == ord.OrderId)
             {

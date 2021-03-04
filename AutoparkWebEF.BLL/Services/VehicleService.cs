@@ -4,6 +4,7 @@ using AutoparkWebEF.BLL.Infastructure;
 using AutoparkWebEF.BLL.Interfaces;
 using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
+using AutoMapper.QueryableExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,7 +22,7 @@ namespace AutoparkWebEF.BLL.Services
             db = uow;
         }
 
-        public void Create(VehicleDto vehicleDto)
+        public async Task Create(VehicleDto vehicleDto)
         {
             if (vehicleDto == null)
                 throw new ValidationException("Vehicle not found", "");
@@ -32,17 +33,17 @@ namespace AutoparkWebEF.BLL.Services
             }).CreateMapper();
             var vehicle = mapper.Map<VehicleDto, Vehicle>(vehicleDto);
 
-            db.Vehicles.Create(vehicle);
-            db.Save();
+            await db.Vehicles.Create(vehicle);
+            await db.Save();
         }
 
-        public void Delete(VehicleDto vehicleDto)
+        public async Task Delete(VehicleDto vehicleDto)
         {
             if (vehicleDto == null)
                 throw new ValidationException("Vehicle not found", "");
 
-            db.Vehicles.Delete(vehicleDto.Id);
-            db.Save();
+            await db.Vehicles.Delete(vehicleDto.Id);
+            await db.Save();
         }
 
         public void Dispose()
@@ -68,15 +69,15 @@ namespace AutoparkWebEF.BLL.Services
             return mapper.Map<Vehicle, VehicleDto>(vehicle);
         }
 
-        public async Task<IEnumerable<VehicleDto>> GetAll()
+        public IQueryable<VehicleDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<Vehicle, VehicleDto>();
+            var conf = new MapperConfiguration(cfg => { cfg.CreateMap<Vehicle, VehicleDto>();
                 cfg.CreateMap<VehicleType, VehicleTypeDto>();
-            }).CreateMapper();
-            return mapper.Map<IEnumerable<Vehicle>, List<VehicleDto>>(await db.Vehicles.GetAll());
+            });
+            return db.Vehicles.GetAll().ProjectTo<VehicleDto>(conf);
         }
 
-        public void Update(VehicleDto vehicleDto)
+        public async Task Update(VehicleDto vehicleDto)
         {
             if (vehicleDto == null)
                 throw new ValidationException("Vehicle not found", "");
@@ -88,7 +89,7 @@ namespace AutoparkWebEF.BLL.Services
             var vehicle = mapper.Map<VehicleDto, Vehicle>(vehicleDto);
 
             db.Vehicles.Update(vehicle);
-            db.Save();
+            await db.Save();
         }
     }
 }

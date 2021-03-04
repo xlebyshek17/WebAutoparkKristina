@@ -14,7 +14,7 @@
                 <label asp-for="TypeId">Type</label>
                 <div>
                     <select name="TypeId" class="form-control">
-                        @foreach (var t in await type.GetAll())
+                        @foreach (var t in type.GetAll())
                         {
                             <option value="@t.Id">@t.TypeName</option>
                         }

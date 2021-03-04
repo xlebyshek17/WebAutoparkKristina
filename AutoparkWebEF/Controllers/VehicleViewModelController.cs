@@ -20,13 +20,13 @@ namespace AutoparkWebEF.Controllers
             db = service;
         }
 
-        public async Task<IActionResult> ViewVehicles(SortState sortOrder = SortState.DefaultByID)
+        public IActionResult ViewVehicles(SortState sortOrder = SortState.DefaultByID)
         {
             ViewData["ModelName"] = sortOrder == SortState.ModelNameAsc ? SortState.ModelNameDesc : SortState.ModelNameAsc;
             ViewData["Mileage"] = sortOrder == SortState.MileageAsc ? SortState.MileageDesc : SortState.MileageAsc;
             ViewData["TypeName"] = sortOrder == SortState.TypeNameAsc ? SortState.TypeNameDesc : SortState.TypeNameAsc;
 
-            var vehicleDtos = await db.GetAll();
+            var vehicleDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => { cfg.CreateMap<VehicleDto, VehicleViewModel>().ForMember(dest => dest.TypeName, act => act.MapFrom(src => src.Type.TypeName));
                 
             }).CreateMapper();
@@ -61,13 +61,13 @@ namespace AutoparkWebEF.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult CreateVehicle(VehicleViewModel vehicle)
+        public async Task<IActionResult> CreateVehicle(VehicleViewModel vehicle)
         {
             if (ModelState.IsValid)
             {
                 var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleViewModel, VehicleDto>()).CreateMapper();
                 var vehicleDto = mapper.Map<VehicleViewModel, VehicleDto>(vehicle);
-                db.Create(vehicleDto);
+                await db.Create(vehicleDto);
                 return RedirectToAction("ViewVehicles");
             }
 
@@ -99,7 +99,7 @@ namespace AutoparkWebEF.Controllers
                 var vehicleDto = await db.Get(id);
                 if (vehicleDto != null)
                 {
-                    db.Delete(vehicleDto);
+                    await db.Delete(vehicleDto);
                     return RedirectToAction("ViewVehicles");
                 }
             }

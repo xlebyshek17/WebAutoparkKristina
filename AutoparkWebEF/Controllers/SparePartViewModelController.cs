@@ -19,9 +19,9 @@ namespace AutoparkWebEF.Controllers
             db = service;
         }
 
-        public async Task<IActionResult> ViewSpareParts()
+        public IActionResult ViewSpareParts()
         {
-            var partsDtos = await db.GetAll();
+            var partsDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SparePartDto, SparePartViewModel>()).CreateMapper();
             var parts = mapper.Map<IEnumerable<SparePartDto>, List<SparePartViewModel>>(partsDtos);
             return View(parts);
@@ -33,10 +33,10 @@ namespace AutoparkWebEF.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateSparePart(SparePartViewModel part)
+        public async Task<IActionResult> CreateSparePart(SparePartViewModel part)
         {
             var partDto = new SparePartDto { Id = part.Id, Name = part.Name };
-            db.Create(partDto);
+            await db.Create(partDto);
             return RedirectToAction("ViewSpareParts");
         }
 
@@ -62,7 +62,7 @@ namespace AutoparkWebEF.Controllers
                 var partDto = await db.Get(id);
                 if (partDto != null)
                 {
-                    db.Delete(partDto);
+                    await db.Delete(partDto);
                     return RedirectToAction("ViewSpareParts");
                 }
             }

@@ -15,11 +15,11 @@ namespace AutoparkWebEF.DAL.Repositories
         private AutoparkContext db;
         
         // TODO: Why do all props have interface type but these fields are not? Change this pls.
-        private VehicleRepository vehicleRepo;
-        private VehicleTypeRepository vehicleTypeRepo;
-        private SparePartRepository sparePartRepo;
-        private OrderRepository orderRepo;
-        private OrderItemsRepository orderItemsRepo;
+        private IGenericRepository<Vehicle> vehicleRepo;
+        private IGenericRepository<VehicleType> vehicleTypeRepo;
+        private IGenericRepository<SparePart> sparePartRepo;
+        private IGenericRepository<Order> orderRepo;
+        private IGenericRepository<OrderItem> orderItemsRepo;
 
         public EFUnitOfWork(DbContextOptions<AutoparkContext> connection)
         {
@@ -27,7 +27,7 @@ namespace AutoparkWebEF.DAL.Repositories
             db = new AutoparkContext(connection);
         }
 
-        public IRepository<VehicleType> VehicleTypes 
+        public IGenericRepository<VehicleType> VehicleTypes 
         { 
             get
             {
@@ -37,7 +37,7 @@ namespace AutoparkWebEF.DAL.Repositories
             }
         }
 
-        public IRepository<Vehicle> Vehicles 
+        public IGenericRepository<Vehicle> Vehicles 
         { 
             get
             {
@@ -47,7 +47,7 @@ namespace AutoparkWebEF.DAL.Repositories
             }
         }
 
-        public IRepository<SparePart> SpareParts 
+        public IGenericRepository<SparePart> SpareParts 
         { 
             get
             {
@@ -57,7 +57,7 @@ namespace AutoparkWebEF.DAL.Repositories
             }
         }
 
-        public IRepository<Order> Orders
+        public IGenericRepository<Order> Orders
         { 
             get
             {
@@ -67,7 +67,7 @@ namespace AutoparkWebEF.DAL.Repositories
             }
         }
 
-        public IRepository<OrderItem> OrderItems 
+        public IGenericRepository<OrderItem> OrderItems 
         { 
             get
             {
@@ -77,7 +77,7 @@ namespace AutoparkWebEF.DAL.Repositories
             }
         }
 
-        public async void Save()
+        public async Task Save()
         {
             await db.SaveChangesAsync();
         }

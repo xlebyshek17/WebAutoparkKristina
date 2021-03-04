@@ -19,9 +19,9 @@ namespace AutoparkWebEF.Controllers
             db = service;
         }
 
-        public async Task<IActionResult> ViewVehicleTypes()
+        public IActionResult ViewVehicleTypes()
         {
-            var vehicleTypeDtos = await db.GetAll();
+            var vehicleTypeDtos = db.GetAll();
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeDto, VehicleTypeViewModel>()).CreateMapper();
             var vehicles = mapper.Map<IEnumerable<VehicleTypeDto>, List<VehicleTypeViewModel>>(vehicleTypeDtos);
             return View(vehicles);
@@ -32,12 +32,12 @@ namespace AutoparkWebEF.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult CreateType(VehicleTypeViewModel type)
+        public async Task<IActionResult> CreateType(VehicleTypeViewModel type)
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleTypeViewModel, VehicleTypeDto>()).CreateMapper();
             var typeDto = mapper.Map<VehicleTypeViewModel, VehicleTypeDto>(type);
 
-            db.Create(typeDto);
+            await db.Create(typeDto);
 
             return RedirectToAction("ViewVehicleTypes");
         }
@@ -65,7 +65,7 @@ namespace AutoparkWebEF.Controllers
                 var typeDto = await db.Get(id);
                 if (typeDto != null)
                 {
-                    db.Delete(typeDto);
+                    await db.Delete(typeDto);
                     return RedirectToAction("ViewVehicleTypes");
                 }
             }

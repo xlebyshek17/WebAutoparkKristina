@@ -59,7 +59,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var o in await orders.GetAll())
+                        @foreach (var o in orders.GetAll())
                         {
                             <tr>
                                 <td align="center">@o.Id</td>

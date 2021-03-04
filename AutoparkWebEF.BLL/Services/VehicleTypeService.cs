@@ -4,6 +4,8 @@ using AutoparkWebEF.BLL.Infastructure;
 using AutoparkWebEF.BLL.Interfaces;
 using AutoparkWebEF.DAL.Entities;
 using AutoparkWebEF.DAL.Interfaces;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +22,7 @@ namespace AutoparkWebEF.BLL.Services
             db = uow;
         }
 
-        public void Create(VehicleTypeDto typeDto)
+        public async Task Create(VehicleTypeDto typeDto)
         {
             if (typeDto == null)
                 throw new ValidationException("Vehicle type not found", "");
@@ -32,17 +34,17 @@ namespace AutoparkWebEF.BLL.Services
                 TaxCoefficient = typeDto.TaxCoefficient
             };
 
-            db.VehicleTypes.Create(type);
-            db.Save();
+            await db.VehicleTypes.Create(type);
+            await db.Save();
         }
 
-        public void Delete(VehicleTypeDto typeDto)
+        public async Task Delete(VehicleTypeDto typeDto)
         {
             if (typeDto == null)
                 throw new ValidationException("Vehicle type not found", "");
 
-            db.VehicleTypes.Delete(typeDto.Id);
-            db.Save();
+            await db.VehicleTypes.Delete(typeDto.Id);
+            await db.Save();
         }
 
         public void Dispose()
@@ -62,13 +64,13 @@ namespace AutoparkWebEF.BLL.Services
             return new VehicleTypeDto { Id = type.Id, TypeName = type.TypeName, TaxCoefficient = type.TaxCoefficient };
         }
 
-        public async Task<IEnumerable<VehicleTypeDto>> GetAll()
+        public IQueryable<VehicleTypeDto> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<VehicleType, VehicleTypeDto>()).CreateMapper();
-            return mapper.Map<IEnumerable<VehicleType>, List<VehicleTypeDto>>(await db.VehicleTypes.GetAll());
+            var conf = new MapperConfiguration(cfg => cfg.CreateMap<VehicleType, VehicleTypeDto>());
+            return db.VehicleTypes.GetAll().ProjectTo<VehicleTypeDto>(conf);
         }
 
-        public void Update(VehicleTypeDto typeDto)
+        public async Task Update(VehicleTypeDto typeDto)
         {
             if (typeDto == null)
                 throw new ValidationException("Vehicle type not found", "");
@@ -81,7 +83,7 @@ namespace AutoparkWebEF.BLL.Services
             };
 
             db.VehicleTypes.Update(type);
-            db.Save();
+            await db.Save();
         }
     }
 }

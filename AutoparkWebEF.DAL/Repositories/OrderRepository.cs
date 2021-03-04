@@ -10,40 +10,22 @@ using System.Threading.Tasks;
 
 namespace AutoparkWebEF.DAL.Repositories
 {
-    public class OrderRepository : IRepository<Order>
+    public class OrderRepository : GenericRepository<Order>
     {
-        private AutoparkContext db;
-
-        public OrderRepository(AutoparkContext context)
+        public OrderRepository(AutoparkContext context) : base(context)
         {
-            db = context;
+
         }
 
-        public async void Create(Order order)
+        public override async Task<Order> Get(int id)
         {
-            await db.Orders.AddAsync(order);
+            return await GetAll().FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async void Delete(int id)
+        public override IQueryable<Order> GetAll()
         {
-            var order = await db.Orders.FindAsync(id);
-            if (order != null)
-                db.Orders.Remove(order);
+            return base.GetAll().Include(o => o.Vehicle);
         }
 
-        public async Task<Order> Get(int id)
-        {
-            return await db.Orders.Include(o => o.Vehicle).Where(o => o.Id == id).FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<Order>> GetAll()
-        {
-            return await db.Orders.Include(o => o.Vehicle).ToListAsync();
-        }
-
-        public void Update(Order order)
-        {
-            db.Entry(order).State = EntityState.Modified;
-        }
     }
 }
